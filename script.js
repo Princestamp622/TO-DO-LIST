@@ -6,6 +6,9 @@ class TaskManager {
     constructor() {
         this.tasks = [];
         this.editingTaskId = null;
+
+        // Load saved tasks when the application starts
+        this.loadTasks();
     }
 
     // Add a new task
@@ -17,6 +20,8 @@ class TaskManager {
         };
 
         this.tasks.push(task);
+
+        this.saveTasks();
         this.renderTasks();
     }
 
@@ -26,6 +31,8 @@ class TaskManager {
 
         if (task) {
             task.completed = !task.completed;
+
+            this.saveTasks();
             this.renderTasks();
         }
     }
@@ -56,7 +63,10 @@ class TaskManager {
         }
 
         task.text = trimmedText;
+
         this.editingTaskId = null;
+
+        this.saveTasks();
         this.clearError();
         this.renderTasks();
     }
@@ -64,6 +74,7 @@ class TaskManager {
     // Cancel editing
     cancelEdit() {
         this.editingTaskId = null;
+
         this.clearError();
         this.renderTasks();
     }
@@ -76,7 +87,22 @@ class TaskManager {
             this.editingTaskId = null;
         }
 
+        this.saveTasks();
         this.renderTasks();
+    }
+
+    // Save tasks to Local Storage
+    saveTasks() {
+        localStorage.setItem("todoTasks", JSON.stringify(this.tasks));
+    }
+
+    // Load tasks from Local Storage
+    loadTasks() {
+        const savedTasks = localStorage.getItem("todoTasks");
+
+        if (savedTasks) {
+            this.tasks = JSON.parse(savedTasks);
+        }
     }
 
     // Display all tasks
@@ -100,6 +126,7 @@ class TaskManager {
 
                 // Checkbox
                 const checkbox = document.createElement("input");
+
                 checkbox.type = "checkbox";
                 checkbox.className = "complete-checkbox";
                 checkbox.dataset.id = task.id;
@@ -107,7 +134,7 @@ class TaskManager {
 
                 listItem.appendChild(checkbox);
 
-                // Check whether this task is currently being edited
+                // Editing mode
                 if (this.editingTaskId === task.id) {
                     const editInput = document.createElement("input");
 
@@ -166,7 +193,7 @@ class TaskManager {
 
         this.updateTaskCount();
 
-        // Put the cursor inside the edit box automatically
+        // Automatically focus the edit input
         if (this.editingTaskId !== null) {
             const editInput = document.querySelector(".edit-input");
 
@@ -177,7 +204,7 @@ class TaskManager {
         }
     }
 
-    // Update total task count
+    // Update task counter
     updateTaskCount() {
         const taskCount = document.getElementById("task-count");
 
@@ -191,7 +218,7 @@ class TaskManager {
         errorMessage.textContent = message;
     }
 
-    // Clear the error message
+    // Clear error message
     clearError() {
         const errorMessage = document.getElementById("error-message");
 
@@ -226,6 +253,7 @@ taskForm.addEventListener("submit", (event) => {
     }
 
     taskManager.clearError();
+
     taskManager.addTask(taskText);
 
     taskInput.value = "";
@@ -233,7 +261,7 @@ taskForm.addEventListener("submit", (event) => {
 
 
 // =====================================
-// Task Completion
+// Complete Task
 // =====================================
 
 taskList.addEventListener("change", (event) => {
@@ -246,21 +274,22 @@ taskList.addEventListener("change", (event) => {
 
 
 // =====================================
-// Task Buttons
+// Edit and Delete Buttons
 // =====================================
 
 taskList.addEventListener("click", (event) => {
 
-    // Edit button
+    // Edit
     if (event.target.classList.contains("edit-button")) {
         const taskId = Number(event.target.dataset.id);
 
         taskManager.startEditing(taskId);
     }
 
-    // Save button
+    // Save edited task
     if (event.target.classList.contains("save-button")) {
         const taskId = Number(event.target.dataset.id);
+
         const editInput = document.querySelector(".edit-input");
 
         if (editInput) {
@@ -268,12 +297,12 @@ taskList.addEventListener("click", (event) => {
         }
     }
 
-    // Cancel button
+    // Cancel editing
     if (event.target.classList.contains("cancel-button")) {
         taskManager.cancelEdit();
     }
 
-    // Delete button
+    // Delete
     if (event.target.classList.contains("delete-button")) {
         const taskId = Number(event.target.dataset.id);
 
@@ -283,7 +312,7 @@ taskList.addEventListener("click", (event) => {
 
 
 // =====================================
-// Initial Display
+// Display Tasks
 // =====================================
 
 taskManager.renderTasks();
