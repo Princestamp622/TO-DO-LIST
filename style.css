@@ -349,3 +349,18 @@ body {
         flex: 1;
     }
 }
+
+/* ==============================
+   Validation Message
+================================= */
+
+#error-message {
+    display: none;
+    margin: 10px 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #fff0f0;
+    border: 1px solid #ffb3b3;
+    color: #c0392b;
+    font-size: 0.95rem;
+}

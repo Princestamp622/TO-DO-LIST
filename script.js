@@ -7,21 +7,29 @@ class TaskManager {
         this.tasks = [];
         this.editingTaskId = null;
 
-        // Load saved tasks when the application starts
+        // Load previously saved tasks
         this.loadTasks();
     }
 
     // Add a new task
     addTask(text) {
+        const trimmedText = text.trim();
+
+        if (trimmedText === "") {
+            this.showError("Please enter a task.");
+            return;
+        }
+
         const task = {
             id: Date.now(),
-            text: text,
+            text: trimmedText,
             completed: false
         };
 
         this.tasks.push(task);
 
         this.saveTasks();
+        this.clearError();
         this.renderTasks();
     }
 
@@ -43,6 +51,7 @@ class TaskManager {
 
         if (task) {
             this.editingTaskId = id;
+            this.clearError();
             this.renderTasks();
         }
     }
@@ -52,6 +61,7 @@ class TaskManager {
         const task = this.tasks.find((task) => task.id === id);
 
         if (!task) {
+            this.showError("Task could not be found.");
             return;
         }
 
@@ -63,7 +73,6 @@ class TaskManager {
         }
 
         task.text = trimmedText;
-
         this.editingTaskId = null;
 
         this.saveTasks();
@@ -81,6 +90,13 @@ class TaskManager {
 
     // Delete a task
     deleteTask(id) {
+        const taskExists = this.tasks.some((task) => task.id === id);
+
+        if (!taskExists) {
+            this.showError("Task could not be found.");
+            return;
+        }
+
         this.tasks = this.tasks.filter((task) => task.id !== id);
 
         if (this.editingTaskId === id) {
@@ -88,6 +104,7 @@ class TaskManager {
         }
 
         this.saveTasks();
+        this.clearError();
         this.renderTasks();
     }
 
@@ -101,7 +118,16 @@ class TaskManager {
         const savedTasks = localStorage.getItem("todoTasks");
 
         if (savedTasks) {
-            this.tasks = JSON.parse(savedTasks);
+            try {
+                this.tasks = JSON.parse(savedTasks);
+
+                if (!Array.isArray(this.tasks)) {
+                    this.tasks = [];
+                }
+            } catch (error) {
+                this.tasks = [];
+                this.showError("Saved tasks could not be loaded.");
+            }
         }
     }
 
@@ -124,7 +150,6 @@ class TaskManager {
                     listItem.classList.add("completed");
                 }
 
-                // Checkbox
                 const checkbox = document.createElement("input");
 
                 checkbox.type = "checkbox";
@@ -134,7 +159,6 @@ class TaskManager {
 
                 listItem.appendChild(checkbox);
 
-                // Editing mode
                 if (this.editingTaskId === task.id) {
                     const editInput = document.createElement("input");
 
@@ -162,7 +186,6 @@ class TaskManager {
                     listItem.appendChild(cancelButton);
 
                 } else {
-                    // Normal task display
                     const taskText = document.createElement("span");
 
                     taskText.className = "task-text";
@@ -193,7 +216,7 @@ class TaskManager {
 
         this.updateTaskCount();
 
-        // Automatically focus the edit input
+        // Focus the edit input automatically
         if (this.editingTaskId !== null) {
             const editInput = document.querySelector(".edit-input");
 
@@ -215,14 +238,20 @@ class TaskManager {
     showError(message) {
         const errorMessage = document.getElementById("error-message");
 
-        errorMessage.textContent = message;
+        if (errorMessage) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = "block";
+        }
     }
 
-    // Clear error message
+    // Clear the error message
     clearError() {
         const errorMessage = document.getElementById("error-message");
 
-        errorMessage.textContent = "";
+        if (errorMessage) {
+            errorMessage.textContent = "";
+            errorMessage.style.display = "none";
+        }
     }
 }
 
@@ -245,18 +274,11 @@ const taskList = document.getElementById("task-list");
 taskForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const taskText = taskInput.value.trim();
+    taskManager.addTask(taskInput.value);
 
-    if (taskText === "") {
-        taskManager.showError("Please enter a task.");
-        return;
+    if (taskInput.value.trim() !== "") {
+        taskInput.value = "";
     }
-
-    taskManager.clearError();
-
-    taskManager.addTask(taskText);
-
-    taskInput.value = "";
 });
 
 
@@ -279,17 +301,14 @@ taskList.addEventListener("change", (event) => {
 
 taskList.addEventListener("click", (event) => {
 
-    // Edit
     if (event.target.classList.contains("edit-button")) {
         const taskId = Number(event.target.dataset.id);
 
         taskManager.startEditing(taskId);
     }
 
-    // Save edited task
     if (event.target.classList.contains("save-button")) {
         const taskId = Number(event.target.dataset.id);
-
         const editInput = document.querySelector(".edit-input");
 
         if (editInput) {
@@ -297,12 +316,10 @@ taskList.addEventListener("click", (event) => {
         }
     }
 
-    // Cancel editing
     if (event.target.classList.contains("cancel-button")) {
         taskManager.cancelEdit();
     }
 
-    // Delete
     if (event.target.classList.contains("delete-button")) {
         const taskId = Number(event.target.dataset.id);
 
@@ -312,7 +329,7 @@ taskList.addEventListener("click", (event) => {
 
 
 // =====================================
-// Display Tasks
+// Initial Display
 // =====================================
 
 taskManager.renderTasks();
