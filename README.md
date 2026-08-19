@@ -2,94 +2,94 @@
 
 ## Project Description
 
-The To-Do List Application is a responsive web application designed to help users manage their daily tasks.
+The To-Do List Application is a simple web application designed to help users manage their daily tasks.
 
-Users will be able to add, view, complete, edit, and delete tasks. The application will also display the total number of tasks and save task information using the browser's Local Storage.
+Users can add, view, complete, edit, and delete tasks. The application also keeps tasks saved in the browser using Local Storage, so tasks remain available after refreshing the page.
 
-The application is being developed as a practical programming assessment project using HTML5, CSS3, Vanilla JavaScript, Git, and GitHub.
-
----
-
-## Requirements
-
-The application must allow users to:
-
-1. Add new tasks.
-2. View all tasks.
-3. Mark tasks as completed.
-4. Edit existing tasks.
-5. Delete tasks.
-6. View the total number of tasks.
-7. Save tasks using Local Storage.
-8. Prevent empty or spaces-only tasks.
-9. Work properly on desktop, tablet, and mobile devices.
-10. Provide a clear, modern, and attractive user interface.
+The application is designed to be simple enough for students and everyday users while providing a clean, modern, responsive interface.
 
 ---
 
-## Planned Features
+## Project Requirements
 
-### Add Task
+The application was developed to meet the following requirements:
 
-Users will enter a task into an input field and click the Add button.
+1. Users can add new tasks.
+2. Users can view all saved tasks.
+3. Users can mark tasks as completed.
+4. Users can edit existing tasks.
+5. Users can delete tasks.
+6. Users can see the total number of tasks.
+7. Tasks are saved using Browser Local Storage.
+8. Empty or spaces-only tasks are rejected.
+9. The application works on desktop, tablet, and mobile screens.
+10. The application handles invalid input without crashing.
+
+---
+
+## Features
+
+### Add Tasks
+
+Users can enter a task and click the Add button to create a new task.
 
 ### Display Tasks
 
-All saved tasks will appear clearly in the task list.
+All tasks are displayed clearly in the task list.
 
-Each task will contain:
+### Complete Tasks
 
-- Task text
-- Completion control
-- Edit button
-- Delete button
+Users can click the checkbox beside a task to mark it as completed.
 
-### Complete Task
+Completed tasks receive a different visual appearance and remain completed after refreshing the browser.
 
-Users will be able to mark a task as completed.
+### Edit Tasks
 
-Completed tasks will have a different visual appearance, including:
+Users can click Edit to change the text of an existing task.
 
-- Strikethrough text
-- Reduced opacity
-- Different background styling
+The application provides Save and Cancel options.
 
-### Edit Task
+Empty edited tasks are not allowed.
 
-Users will be able to edit an existing task.
+### Delete Tasks
 
-The application will prevent an edited task from being saved if the new text is empty.
+Users can remove tasks using the Delete button.
 
-### Delete Task
-
-Users will be able to delete tasks.
-
-After deletion, the task count and Local Storage will be updated.
+The task counter and Local Storage are updated automatically.
 
 ### Task Counter
 
-The application will display the current number of tasks.
+The application displays the total number of tasks.
 
-Example:
+For example:
 
-**Total Tasks: 5**
+`Total Tasks: 5`
 
-The number will update automatically whenever tasks are added or deleted.
+The counter automatically updates when tasks are added or deleted.
 
 ### Local Storage
 
-Tasks will be saved using the browser's Local Storage.
+Tasks are stored in the browser using Local Storage.
 
-Tasks should remain available after the browser page is refreshed.
+This means tasks remain available after refreshing the page.
 
 ### Input Validation
 
-The application will reject:
+The application prevents users from adding:
 
-- Empty input
-- Input containing only spaces
+- Empty tasks
+- Spaces-only tasks
+- Empty edited tasks
 
-A clear validation message will be displayed.
+A clear error message is displayed when invalid input is entered.
+
+### Responsive Design
+
+The application is designed to work on:
+
+- Desktop
+- Tablet
+- Mobile devices
 
 ---
 
@@ -102,37 +102,32 @@ A clear validation message will be displayed.
 - Git
 - GitHub
 
-No JavaScript frameworks will be used.
+No JavaScript frameworks were used.
 
 ---
 
-## Planned JavaScript Structure
+## JavaScript Structure
 
-The application will use a JavaScript class called:
+The application uses a JavaScript class called `TaskManager`.
 
-### TaskManager
-
-The `TaskManager` class will manage the application's tasks and functionality.
-
-Planned methods include:
+The class manages the application's tasks and includes methods such as:
 
 - `addTask()`
-- `deleteTask()`
-- `editTask()`
 - `toggleTask()`
+- `startEditing()`
+- `saveEdit()`
+- `cancelEdit()`
+- `deleteTask()`
 - `saveTasks()`
 - `loadTasks()`
 - `renderTasks()`
 - `updateTaskCount()`
-- `validateTask()`
+- `showError()`
+- `clearError()`
 
-The exact implementation may be adjusted during development while keeping the code simple and easy to understand.
+The application uses an array of task objects.
 
----
-
-## Task Data Structure
-
-Each task will contain three main properties:
+Each task contains:
 
 - `id`
 - `text`
@@ -142,7 +137,7 @@ Example:
 
 ```javascript
 {
-    id: unique identifier,
-    text: "Complete JavaScript assignment",
+    id: 123456789,
+    text: "Study JavaScript",
     completed: false
 }
