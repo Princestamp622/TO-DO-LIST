@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>To-Do List Application</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="app-container">
+
+        <section class="todo-card">
+
+            <header class="app-header">
+                <p class="app-label">TASK MANAGER</p>
+                <h1>My Task Board</h1>
+                <p class="app-description">
+                    Organize your tasks and stay productive.
+                </p>
+            </header>
+
+            <section class="task-input-section">
+                <form id="task-form">
+
+                    <label for="task-input" class="visually-hidden">
+                        Enter a new task
+                    </label>
+
+                    <input
+                        type="text"
+                        id="task-input"
+                        name="task"
+                        placeholder="What needs to be done?"
+                        autocomplete="off"
+                    >
+
+                    <button type="submit" id="add-task-button">
+                        Add Task
+                    </button>
+
+                </form>
+
+                <p id="error-message" class="error-message" aria-live="polite"></p>
+            </section>
+
+            <section class="task-summary">
+                <h2>Your Tasks</h2>
+                <p id="task-count">Total Tasks: 0</p>
+            </section>
+
+            <section class="task-list-section">
+                <ul id="task-list" aria-label="Task list">
+                    <!-- Tasks will be added here with JavaScript -->
+                </ul>
+
+                <p id="empty-state" class="empty-state">
+                    No tasks yet. Add your first task!
+                </p>
+            </section>
+
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
